@@ -164,6 +164,12 @@
                         <field id="populate_fields">1</field>
                     </depends>
                 </field>
+                <field id="template_placeholders" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <frontend_model>Vaimo\GoogleAddressSearchV2\Block\Adminhtml\System\Config\TemplatePlaceholders</frontend_model>
+                    <depends>
+                        <field id="populate_fields">1</field>
+                    </depends>
+                </field>
             </group>
         </section>
     </system>

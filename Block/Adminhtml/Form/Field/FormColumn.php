@@ -32,6 +32,8 @@ class FormColumn extends Select
 
     protected function _toHtml(): string
     {
+        $this->setExtraParams('style="width:110px"');
+
         if (!$this->getOptions()) {
             $this->addOption('', (string)__('All forms'));
             foreach ($this->forms->toOptionArray() as $option) {

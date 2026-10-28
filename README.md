@@ -4,8 +4,8 @@ Address autocomplete for Magento 2 storefront address forms, built on **Google P
 A rewrite of `Vaimo_GoogleAddressSearch` (V1) with the same purpose (search an address, fill the form)
 and a focus on API cost, performance and maintainability.
 
-- Luma: customer address book, checkout shipping and billing addresses, multishipping address forms
-- Hyvä: not yet; the core JavaScript is framework-free so a Hyvä adapter can reuse it (see [Hyvä](#hyvä))
+Supported forms (Luma): customer address book, checkout shipping and billing addresses, multishipping
+address forms.
 
 ## Installation
 
@@ -162,13 +162,6 @@ empty. Default rows cover street (number-last, with a number-first override for 
 - Manual edits after selection are never overwritten until the next selection
 - Country changed in the form → suggestions, cache and session reset
 - Checkout re-renders, modals, several address forms on one page → one instance per input element
-
-## Hyvä
-
-The `core/*` files are UMD modules with no dependencies: they load as RequireJS modules in Luma, as
-globals (`window.VaimoGasV2`) in a plain `<script>`, and in Node for tests. A Hyvä implementation needs a
-template that loads them, a small adapter (Alpine/DOM) implementing the form-filler contract, and Tailwind
-styles for the `vaimo-gas-v2__*` classes. The PHP config, ViewModel and validation are reused as-is.
 
 ## Migrating from V1
 

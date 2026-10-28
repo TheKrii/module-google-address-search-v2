@@ -23,20 +23,21 @@ class FieldMapping extends AbstractFieldArray
             'label' => __('Form'),
             'renderer' => $this->getFormRenderer(),
         ]);
+        // Narrow columns so the table fits the config form without squeezing the label column
         $this->addColumn('countries', [
             'label' => __('Countries'),
             'class' => 'input-text',
-            'style' => 'width:110px',
+            'style' => 'width:70px',
         ]);
         $this->addColumn('field', [
             'label' => __('Target Field'),
             'class' => 'required-entry input-text',
-            'style' => 'width:140px',
+            'style' => 'width:100px',
         ]);
         $this->addColumn('template', [
             'label' => __('Template'),
             'class' => 'required-entry input-text',
-            'style' => 'width:260px',
+            'style' => 'width:190px',
         ]);
         $this->_addAfter = false;
         $this->_addButtonLabel = (string)__('Add Mapping');
