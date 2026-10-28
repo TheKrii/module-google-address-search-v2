@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Vaimo Group. All rights reserved.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!-- Keep keys out of app:config:dump output (config.php) -->
+    <type name="Magento\Config\Model\Config\TypePool">
+        <arguments>
+            <argument name="sensitive" xsi:type="array">
+                <item name="vaimo_google_address_search_v2/google_api/browser_api_key" xsi:type="string">1</item>
+            </argument>
+            <argument name="environment" xsi:type="array">
+                <item name="vaimo_google_address_search_v2/google_api/browser_api_key" xsi:type="string">1</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <!-- Forms that support address search. Other modules can add their own form codes here. -->
+    <type name="Vaimo\GoogleAddressSearchV2\Model\Config\Source\Forms">
+        <arguments>
+            <argument name="forms" xsi:type="array">
+                <item name="customer_address" xsi:type="string" translatable="true">Customer Address Book</item>
+                <item name="checkout_shipping" xsi:type="string" translatable="true">Checkout Shipping Address</item>
+                <item name="checkout_billing" xsi:type="string" translatable="true">Checkout Billing Address</item>
+                <item name="multishipping_address" xsi:type="string" translatable="true">Multishipping Address Forms</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <virtualType name="Vaimo\GoogleAddressSearchV2\Model\Config\Backend\MinChars" type="Vaimo\GoogleAddressSearchV2\Model\Config\Backend\BoundedInteger">
+        <arguments>
+            <argument name="data" xsi:type="array">
+                <item name="min" xsi:type="number">1</item>
+                <item name="max" xsi:type="number">20</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Vaimo\GoogleAddressSearchV2\Model\Config\Backend\DebounceMs" type="Vaimo\GoogleAddressSearchV2\Model\Config\Backend\BoundedInteger">
+        <arguments>
+            <argument name="data" xsi:type="array">
+                <item name="min" xsi:type="number">0</item>
+                <item name="max" xsi:type="number">2000</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Vaimo\GoogleAddressSearchV2\Model\Config\Backend\MinIntervalMs" type="Vaimo\GoogleAddressSearchV2\Model\Config\Backend\BoundedInteger">
+        <arguments>
+            <argument name="data" xsi:type="array">
+                <item name="min" xsi:type="number">0</item>
+                <item name="max" xsi:type="number">5000</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Vaimo\GoogleAddressSearchV2\Model\Config\Backend\MaxSuggestions" type="Vaimo\GoogleAddressSearchV2\Model\Config\Backend\BoundedInteger">
+        <arguments>
+            <argument name="data" xsi:type="array">
+                <item name="min" xsi:type="number">1</item>
+                <item name="max" xsi:type="number">5</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Vaimo\GoogleAddressSearchV2\Model\Config\Backend\SessionTimeout" type="Vaimo\GoogleAddressSearchV2\Model\Config\Backend\BoundedInteger">
+        <arguments>
+            <argument name="data" xsi:type="array">
+                <item name="min" xsi:type="number">30</item>
+                <item name="max" xsi:type="number">600</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Vaimo\GoogleAddressSearchV2\Model\Config\Backend\LanguageCode" type="Vaimo\GoogleAddressSearchV2\Model\Config\Backend\Pattern">
+        <arguments>
+            <argument name="data" xsi:type="array">
+                <item name="pattern" xsi:type="string">/^[a-z]{2,3}(-[A-Za-z0-9]{2,4})?$/</item>
+                <item name="label" xsi:type="string">Language</item>
+                <item name="example" xsi:type="string">en, lv, pt-BR</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Vaimo\GoogleAddressSearchV2\Model\Config\Backend\RegionCode" type="Vaimo\GoogleAddressSearchV2\Model\Config\Backend\Pattern">
+        <arguments>
+            <argument name="data" xsi:type="array">
+                <item name="pattern" xsi:type="string">/^[A-Za-z]{2}$/</item>
+                <item name="label" xsi:type="string">Region Bias</item>
+                <item name="example" xsi:type="string">LV, US</item>
+            </argument>
+        </arguments>
+    </virtualType>
+</config>

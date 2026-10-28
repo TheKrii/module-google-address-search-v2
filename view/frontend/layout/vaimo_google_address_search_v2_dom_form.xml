@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Vaimo Group. All rights reserved.
+ */
+-->
+<!--
+    Reusable handle for plain (non-UI-component) address forms that use Magento_Customer::address/edit.phtml
+    markup. Include it with <update handle="vaimo_google_address_search_v2_dom_form"/> and set the "form"
+    argument of the target to a form code registered in di.xml.
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="before.body.end">
+            <block class="Magento\Framework\View\Element\Template"
+                   name="vaimo.gas.v2.dom_form"
+                   template="Vaimo_GoogleAddressSearchV2::init.phtml">
+                <arguments>
+                    <argument name="view_model" xsi:type="object">Vaimo\GoogleAddressSearchV2\ViewModel\AddressSearch</argument>
+                    <argument name="targets" xsi:type="array">
+                        <item name="address_form" xsi:type="array">
+                            <item name="selector" xsi:type="string">form.form-address-edit #street_1</item>
+                            <item name="adapter" xsi:type="string">dom-form</item>
+                            <item name="form" xsi:type="string">customer_address</item>
+                        </item>
+                    </argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+    </body>
+</page>

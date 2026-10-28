@@ -1,0 +1,170 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Vaimo Group. All rights reserved.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="vaimo_frontend" translate="label" sortOrder="310">
+            <label>Vaimo Frontend</label>
+        </tab>
+        <section id="vaimo_google_address_search_v2" translate="label" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>Google Address Search V2</label>
+            <tab>vaimo_frontend</tab>
+            <resource>Vaimo_GoogleAddressSearchV2::config</resource>
+
+            <group id="general" translate="label comment" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>General Settings</label>
+                <comment><![CDATA[Address autocomplete for storefront address forms, powered by Google Places API (New). V2 runs independently of the legacy <em>Customers &gt; Google Address Search</em> (V1) module: while V1 is enabled for a store view, V2 stays inactive there so the two never attach to the same field or double-bill. Disable V1 for a store view to switch it to V2.]]></comment>
+                <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Set per website or store view to limit address search to specific storefronts.</comment>
+                </field>
+                <field id="forms" translate="label comment" type="multiselect" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Enabled On Forms</label>
+                    <source_model>Vaimo\GoogleAddressSearchV2\Model\Config\Source\Forms</source_model>
+                    <backend_model>Vaimo\GoogleAddressSearchV2\Model\Config\Backend\Forms</backend_model>
+                    <comment>Address search attaches to the first street line of each selected form.</comment>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                </field>
+                <field id="debug" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Debug Logging (Browser Console)</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Logs request, cache and session events to the browser console. Never logs typed input, addresses or API keys. Keep disabled in production.</comment>
+                </field>
+            </group>
+
+            <group id="google_api" translate="label comment" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Google API Configuration</label>
+                <comment><![CDATA[Required APIs in the Google Cloud project: <strong>Maps JavaScript API</strong> and <strong>Places API (New)</strong>. The legacy "Places API" is not used.<br/>Recommended key restrictions: <em>Application restriction</em> = Websites (HTTP referrers) listing only your storefront domains; <em>API restriction</em> = Maps JavaScript API + Places API (New). Set a daily quota cap and a billing alert in Google Cloud.]]></comment>
+                <field id="browser_api_key" translate="label comment" type="obscure" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Browser API Key</label>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                    <comment>Used by the Maps JavaScript API in the shopper's browser, so it is visible in page source by design. Protect it with HTTP referrer and API restrictions. Use a separate key per environment (production, staging, local) so each can be restricted to its own domains. No server-side key is needed: V2 makes no server-to-Google calls.</comment>
+                </field>
+                <field id="maps_js_version" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Maps JavaScript API Version</label>
+                    <source_model>Vaimo\GoogleAddressSearchV2\Model\Config\Source\MapsVersion</source_model>
+                    <comment>"Quarterly" is the stable channel Google recommends for production. "Weekly" gets fixes sooner.</comment>
+                </field>
+            </group>
+
+            <group id="search" translate="label comment" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Search Behavior and Performance</label>
+                <comment>Every autocomplete request in a session that does not end with a selection is billed individually, so these settings directly control cost.</comment>
+                <field id="min_chars" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Minimum Characters</label>
+                    <backend_model>Vaimo\GoogleAddressSearchV2\Model\Config\Backend\MinChars</backend_model>
+                    <validate>required-entry validate-digits validate-digits-range digits-range-1-20</validate>
+                    <comment>No request is sent until the trimmed input reaches this length (1-20). Recommended: 3-4.</comment>
+                </field>
+                <field id="debounce_ms" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Debounce Delay (ms)</label>
+                    <backend_model>Vaimo\GoogleAddressSearchV2\Model\Config\Backend\DebounceMs</backend_model>
+                    <validate>required-entry validate-digits validate-digits-range digits-range-0-2000</validate>
+                    <comment>Waits for a pause in typing before searching (0-2000). Recommended: 250-400.</comment>
+                </field>
+                <field id="min_interval_ms" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Minimum Interval Between Requests (ms)</label>
+                    <backend_model>Vaimo\GoogleAddressSearchV2\Model\Config\Backend\MinIntervalMs</backend_model>
+                    <validate>required-entry validate-digits validate-digits-range digits-range-0-5000</validate>
+                    <comment>Hard rate limit per field on top of the debounce (0-5000). 0 disables it.</comment>
+                </field>
+                <field id="max_suggestions" translate="label comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Maximum Suggestions</label>
+                    <backend_model>Vaimo\GoogleAddressSearchV2\Model\Config\Backend\MaxSuggestions</backend_model>
+                    <validate>required-entry validate-digits validate-digits-range digits-range-1-5</validate>
+                    <comment>Suggestions shown per search (1-5). Google returns at most 5; showing fewer does not reduce cost.</comment>
+                </field>
+                <field id="primary_types" translate="label comment" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Suggestion Place Types</label>
+                    <backend_model>Vaimo\GoogleAddressSearchV2\Model\Config\Backend\PrimaryTypes</backend_model>
+                    <comment><![CDATA[Comma-separated <a href="https://developers.google.com/maps/documentation/places/web-service/place-types" target="_blank" rel="noopener">place types</a>, at most 5. Default limits suggestions to deliverable addresses. Leave empty to allow all types (businesses, landmarks).]]></comment>
+                </field>
+                <field id="country_mode" translate="label comment" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Country Restriction</label>
+                    <source_model>Vaimo\GoogleAddressSearchV2\Model\Config\Source\CountryMode</source_model>
+                    <comment>"Country selected in the form" gives the most relevant results and resets the search when the shopper changes country. Google accepts at most 15 countries per request.</comment>
+                </field>
+                <field id="countries" translate="label comment" type="multiselect" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Restrict to Countries</label>
+                    <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
+                    <backend_model>Vaimo\GoogleAddressSearchV2\Model\Config\Backend\Countries</backend_model>
+                    <can_be_empty>1</can_be_empty>
+                    <comment>Used by "Fixed list", and as the fallback for "Country selected in the form" while no country is selected. Maximum 15.</comment>
+                    <depends>
+                        <field id="country_mode" separator=",">fixed,form</field>
+                    </depends>
+                </field>
+                <field id="language" translate="label comment" type="text" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Language</label>
+                    <backend_model>Vaimo\GoogleAddressSearchV2\Model\Config\Backend\LanguageCode</backend_model>
+                    <comment>Language of suggestions and address components, e.g. "en", "lv" or "pt-BR". Empty uses the store view locale.</comment>
+                </field>
+                <field id="region" translate="label comment" type="text" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Region Bias</label>
+                    <backend_model>Vaimo\GoogleAddressSearchV2\Model\Config\Backend\RegionCode</backend_model>
+                    <comment>Two-letter region code used to format and rank results, e.g. "LV". Empty uses the store's default country.</comment>
+                </field>
+                <field id="session_timeout_s" translate="label comment" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Session Idle Timeout (seconds)</label>
+                    <backend_model>Vaimo\GoogleAddressSearchV2\Model\Config\Backend\SessionTimeout</backend_model>
+                    <validate>required-entry validate-digits validate-digits-range digits-range-30-600</validate>
+                    <comment>A session token groups the keystrokes of one search with the final selection, making the autocomplete requests free when it ends in a selection. A new token is started after this much inactivity (30-600). Recommended: 180.</comment>
+                </field>
+                <field id="skip_dead_prefixes" translate="label comment" type="select" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Skip Searches After No Results</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>When a search returns nothing, longer inputs starting with the same text are not sent to Google again in that session.</comment>
+                </field>
+                <field id="disable_browser_autofill" translate="label comment" type="select" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Disable Browser Autofill on Search Field</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Prevents the browser's own address dropdown from covering the suggestions. Other address fields keep browser autofill.</comment>
+                </field>
+            </group>
+
+            <group id="fill" translate="label comment" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Field Population and Mapping</label>
+                <comment><![CDATA[Selecting a suggestion makes one Place Details (New) request for <code>addressComponents</code> only (Essentials tier) and ends the session.]]></comment>
+                <field id="populate_fields" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Populate Address Fields</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>If disabled, a selection only copies the suggestion text into the street field and no Place Details request is made. Abandoned sessions are billed per request, so this rarely saves money.</comment>
+                </field>
+                <field id="missing_component" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>When a Component Is Missing</label>
+                    <source_model>Vaimo\GoogleAddressSearchV2\Model\Config\Source\MissingComponent</source_model>
+                    <comment>E.g. the selected place has no postcode. Clearing avoids keeping a postcode from a previously entered address.</comment>
+                    <depends>
+                        <field id="populate_fields">1</field>
+                    </depends>
+                </field>
+                <field id="on_clear" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>When the Search Field Is Cleared</label>
+                    <source_model>Vaimo\GoogleAddressSearchV2\Model\Config\Source\OnClear</source_model>
+                    <comment>Fields the shopper edited after selection are never cleared.</comment>
+                    <depends>
+                        <field id="populate_fields">1</field>
+                    </depends>
+                </field>
+                <field id="field_mapping" translate="label comment" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Field Mapping</label>
+                    <frontend_model>Vaimo\GoogleAddressSearchV2\Block\Adminhtml\Form\Field\FieldMapping</frontend_model>
+                    <backend_model>Vaimo\GoogleAddressSearchV2\Model\Config\Backend\FieldMapping</backend_model>
+                    <comment><![CDATA[<strong>Target</strong>: a Magento field code (<code>street.0</code>, <code>street.1</code>, <code>city</code>, <code>postcode</code>, <code>country_id</code>, <code>region</code>, <code>company</code>...) or a CSS selector scoped to the form (starting with <code>#</code>, <code>.</code> or <code>[</code>). <code>region</code> selects the State/Province option, or fills the text field for countries without a region list.<br/>
+<strong>Template</strong>: Google component types in braces, e.g. <code>{route} {street_number}</code>. Add <code>:short</code> for the short form (<code>{country:short}</code>) and use <code>|</code> for fallbacks (<code>{locality|postal_town}</code>). Missing parts and leftover separators are removed.<br/>
+<strong>Form</strong> / <strong>Countries</strong> narrow a row (comma-separated ISO codes). For each target the most specific matching row wins: form + country, then form, then country, then rows for all forms.]]></comment>
+                    <depends>
+                        <field id="populate_fields">1</field>
+                    </depends>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

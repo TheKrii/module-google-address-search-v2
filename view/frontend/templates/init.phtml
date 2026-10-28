@@ -1,0 +1,22 @@
+<?php
+/**
+ * Copyright © Vaimo Group. All rights reserved.
+ */
+/**
+ * Emits the address search bootstrap for the targets passed as block arguments.
+ * Renders nothing when the module is disabled, unconfigured, or no target form is enabled.
+ *
+ * @var \Magento\Framework\View\Element\Template $block
+ */
+
+/** @var \Vaimo\GoogleAddressSearchV2\ViewModel\AddressSearch $viewModel */
+$viewModel = $block->getData('view_model');
+$config = $viewModel->getJsConfig((array)$block->getData('targets'));
+
+if ($config === null) {
+    return;
+}
+?>
+<script type="text/x-magento-init"><?= /* @noEscape */ $viewModel->serialize([
+    '*' => ['Vaimo_GoogleAddressSearchV2/js/bootstrap' => $config],
+]) ?></script>

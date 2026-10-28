@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Vaimo Group. All rights reserved.
+ */
+-->
+<!-- Example integration of an additional form: reuse the DOM handle and switch the form code. -->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="vaimo_google_address_search_v2_multishipping"/>
+</page>

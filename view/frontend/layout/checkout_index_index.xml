@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Vaimo Group. All rights reserved.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="before.body.end">
+            <block class="Magento\Framework\View\Element\Template"
+                   name="vaimo.gas.v2.checkout"
+                   template="Vaimo_GoogleAddressSearchV2::init.phtml">
+                <arguments>
+                    <argument name="view_model" xsi:type="object">Vaimo\GoogleAddressSearchV2\ViewModel\AddressSearch</argument>
+                    <argument name="targets" xsi:type="array">
+                        <!-- Street line 0 of every checkout address form marked by Plugin\Checkout\MarkAddressSearchFields -->
+                        <item name="checkout" xsi:type="array">
+                            <item name="selector" xsi:type="string">.vaimo-gas-v2 input</item>
+                            <item name="adapter" xsi:type="string">ui-form</item>
+                        </item>
+                    </argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+    </body>
+</page>

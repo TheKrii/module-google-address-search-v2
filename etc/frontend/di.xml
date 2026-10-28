@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Vaimo Group. All rights reserved.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Checkout\Block\Checkout\LayoutProcessor">
+        <plugin name="vaimo_google_address_search_v2_mark_street_fields"
+                type="Vaimo\GoogleAddressSearchV2\Plugin\Checkout\MarkAddressSearchFields"/>
+    </type>
+</config>

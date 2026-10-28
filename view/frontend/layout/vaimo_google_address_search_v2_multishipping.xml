@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Vaimo Group. All rights reserved.
+ */
+-->
+<!--
+    Example of adding address search to another form: the multishipping address pages render the same
+    address/edit.phtml markup, so they reuse the DOM handle and only switch the form code, which lets
+    admins enable or disable them separately ("Multishipping Address Forms").
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="vaimo_google_address_search_v2_dom_form"/>
+    <body>
+        <referenceBlock name="vaimo.gas.v2.dom_form">
+            <arguments>
+                <argument name="targets" xsi:type="array">
+                    <item name="address_form" xsi:type="array">
+                        <item name="form" xsi:type="string">multishipping_address</item>
+                    </item>
+                </argument>
+            </arguments>
+        </referenceBlock>
+    </body>
+</page>

@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Vaimo Group. All rights reserved.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <vaimo_google_address_search_v2>
+            <general>
+                <enabled>0</enabled>
+                <forms>customer_address,checkout_shipping,checkout_billing,multishipping_address</forms>
+                <debug>0</debug>
+            </general>
+            <google_api>
+                <browser_api_key/>
+                <maps_js_version>quarterly</maps_js_version>
+            </google_api>
+            <search>
+                <min_chars>3</min_chars>
+                <debounce_ms>300</debounce_ms>
+                <min_interval_ms>0</min_interval_ms>
+                <max_suggestions>5</max_suggestions>
+                <primary_types>street_address,premise,subpremise,route</primary_types>
+                <country_mode>form</country_mode>
+                <countries/>
+                <language/>
+                <region/>
+                <session_timeout_s>180</session_timeout_s>
+                <skip_dead_prefixes>1</skip_dead_prefixes>
+                <disable_browser_autofill>1</disable_browser_autofill>
+            </search>
+            <fill>
+                <populate_fields>1</populate_fields>
+                <missing_component>clear</missing_component>
+                <on_clear>keep</on_clear>
+                <field_mapping>{"_street0":{"form":"","countries":"","field":"street.0","template":"{route} {street_number}"},"_street0nf":{"form":"","countries":"US,CA,GB,IE,AU,NZ,ZA,FR,IN,SG,MY,PH,IL,HK","field":"street.0","template":"{street_number} {route}"},"_street1":{"form":"","countries":"","field":"street.1","template":"{subpremise}"},"_city":{"form":"","countries":"","field":"city","template":"{locality|postal_town|sublocality_level_1|administrative_area_level_3|administrative_area_level_2}"},"_postcode":{"form":"","countries":"","field":"postcode","template":"{postal_code}"},"_country":{"form":"","countries":"","field":"country_id","template":"{country:short}"},"_region":{"form":"","countries":"","field":"region","template":"{administrative_area_level_1}"}}</field_mapping>
+            </fill>
+        </vaimo_google_address_search_v2>
+    </default>
+</config>
