@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Vaimo Group. All rights reserved.
+ */
+-->
+<!--
+    Outputs only the address search configuration (no fields). Use it on pages where fields are registered
+    from JavaScript with bootstrap.addTarget(). See docs/INTEGRATION.md.
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="before.body.end">
+            <block class="Magento\Framework\View\Element\Template"
+                   name="vaimo.gas.v2.config"
+                   template="Vaimo_GoogleAddressSearchV2::init.phtml">
+                <arguments>
+                    <argument name="view_model" xsi:type="object">Vaimo\GoogleAddressSearchV2\ViewModel\AddressSearch</argument>
+                    <argument name="config_only" xsi:type="boolean">true</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+    </body>
+</page>
