@@ -28,9 +28,11 @@ class AddressSearch implements ArgumentInterface
 
     /**
      * @param array<int|string, array{selector?: string, adapter?: string, form?: string}> $targets
+     * @param bool $configOnly Output the configuration without layout targets, for fields registered from
+     *                         JavaScript with bootstrap.addTarget()
      * @return array<string, mixed>|null Null when address search must not run on this page
      */
-    public function getJsConfig(array $targets): ?array
+    public function getJsConfig(array $targets, bool $configOnly = false): ?array
     {
         $storeId = (int)$this->storeManager->getStore()->getId();
 
@@ -41,7 +43,7 @@ class AddressSearch implements ArgumentInterface
         $forms = $this->config->getEnabledForms($storeId);
         $targets = $this->filterTargets($targets, $forms);
 
-        if ($targets === []) {
+        if ($targets === [] && !$configOnly) {
             return null;
         }
 

@@ -25,6 +25,14 @@ Then configure **Stores > Configuration > Vaimo Frontend > Google Address Search
    - API restriction: *Maps JavaScript API* and *Places API (New)*
 3. Set a daily quota cap on Places API (New) and a billing budget alert.
 
+### Defaults: South Africa first
+
+Out of the box, searches are restricted to South Africa (*Country Restriction* = Fixed list, *Restrict to
+Countries* = South Africa), results are ranked and formatted for South Africa (*Region Bias* = `ZA`), and
+the field mapping follows the South African address format (see [Field mapping](#field-mapping)).
+South Africa's ISO code is **`ZA`**; `SA` is Saudi Arabia. For other markets, change these per website or
+store view.
+
 The key is used by the Maps JavaScript API in the shopper's browser, so it is visible in page source by
 design; the restrictions above are what protect it. It is stored encrypted, marked sensitive/environment
 specific (excluded from `app:config:dump`), and V2 makes no server-to-Google calls, so no server key exists.
@@ -105,10 +113,22 @@ to fill coordinate fields, e.g. custom address attributes. The details request t
 `region` selects the State/Province option (matched by label, then short code) or fills the text field for
 countries without a region list. `country_id` is always applied first so region lists are up to date.
 Missing components either clear the field or keep it (setting); the search field itself is never left
-empty. Default rows cover street (number-last, with a number-first override for US, GB, ZA, FR...),
-`street.1` (subpremise), city (with `postal_town`/sublocality fallbacks), postcode, country and region.
+empty. The default rows follow the South African format:
+
+| Target | Default template | Example |
+|---|---|---|
+| `street.0` | `{subpremise}/{street_number} {route}` | 4/10 Bree Street (10 Bree Street without a unit) |
+| `street.0` for DE, NL, BE, AT, CH, Nordics, PL, CZ, SK, Baltics, IT, ES, PT | `{route} {street_number}` | Brīvības iela 12 |
+| `street.1` | `{sublocality_level_1\|sublocality_level_2\|neighborhood}` (suburb) | Cape Town City Centre |
+| `city` | `{locality\|postal_town\|administrative_area_level_3\|sublocality_level_1\|administrative_area_level_2}` | Cape Town |
+| `postcode` | `{postal_code}` | 8001 |
+| `country_id` | `{country:short}` | ZA |
+| `region` | `{administrative_area_level_1}` | Western Cape |
 
 ## Adding address search to another form
+
+**Full guide with examples, including forms rendered later by JavaScript and registering fields from
+your own JS (`addTarget()`): [docs/INTEGRATION.md](docs/INTEGRATION.md).** Short version:
 
 **Same markup as the customer address form** (e.g. a custom page rendering `address/edit.phtml`):
 

@@ -121,3 +121,41 @@ test('coordinates: location is only requested when a mapping uses it, negative v
     assert.equal(mapper.render('{latitude}, {longitude}', index), '-33.9213840, 18.4181250');
     assert.equal(mapper.render('- {route}', index), '');
 });
+
+test('default South African mapping (etc/config.xml): unit/number street, suburb on line 2', () => {
+    const fs = require('node:fs');
+    const path = require('node:path');
+    const xml = fs.readFileSync(path.join(__dirname, '../../etc/config.xml'), 'utf8');
+    const raw = JSON.parse(/<field_mapping>(.*)<\/field_mapping>/s.exec(xml)[1]);
+    const rows = Object.values(raw).map((row) => ({
+        form: row.form,
+        countries: row.countries ? row.countries.split(',') : [],
+        field: row.field,
+        template: row.template
+    }));
+    const capeTown = [
+        {long: '4', short: '4', types: ['subpremise']},
+        {long: '10', short: '10', types: ['street_number']},
+        {long: 'Bree Street', short: 'Bree St', types: ['route']},
+        {long: 'Cape Town City Centre', short: 'Cape Town City Centre', types: ['sublocality_level_1', 'sublocality']},
+        {long: 'Cape Town', short: 'Cape Town', types: ['locality']},
+        {long: 'Western Cape', short: 'WC', types: ['administrative_area_level_1']},
+        {long: 'South Africa', short: 'ZA', types: ['country']},
+        {long: '8001', short: '8001', types: ['postal_code']}
+    ];
+    const za = byTarget(mapper.map(capeTown, rows, {form: 'checkout_shipping'}));
+
+    assert.equal(za['street.0'], '4/10 Bree Street');
+    assert.equal(za['street.1'], 'Cape Town City Centre');
+    assert.equal(za.city, 'Cape Town');
+    assert.equal(za.country_id, 'ZA');
+    assert.equal(za.region, 'Western Cape');
+    assert.equal(za.postcode, '8001');
+
+    // Without a unit the separator disappears
+    assert.equal(byTarget(mapper.map(capeTown.slice(1), rows, {form: 'x'}))['street.0'], '10 Bree Street');
+
+    // Number-after-street countries keep their own order
+    const riga = byTarget(mapper.map(RIGA, rows, {form: 'x'}));
+    assert.equal(riga['street.0'], 'Brīvības iela 12');
+});

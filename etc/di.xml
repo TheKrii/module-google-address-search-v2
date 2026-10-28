@@ -74,7 +74,7 @@
             <argument name="data" xsi:type="array">
                 <item name="pattern" xsi:type="string">/^[a-z]{2,3}(-[A-Za-z0-9]{2,4})?$/</item>
                 <item name="label" xsi:type="string">Language</item>
-                <item name="example" xsi:type="string">en, lv, pt-BR</item>
+                <item name="example" xsi:type="string">en, af, zu</item>
             </argument>
         </arguments>
     </virtualType>
@@ -83,7 +83,7 @@
             <argument name="data" xsi:type="array">
                 <item name="pattern" xsi:type="string">/^[A-Za-z]{2}$/</item>
                 <item name="label" xsi:type="string">Region Bias</item>
-                <item name="example" xsi:type="string">LV, US</item>
+                <item name="example" xsi:type="string">ZA (South Africa; SA is Saudi Arabia)</item>
             </argument>
         </arguments>
     </virtualType>

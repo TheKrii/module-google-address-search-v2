@@ -11,7 +11,7 @@
 
 /** @var \Vaimo\GoogleAddressSearchV2\ViewModel\AddressSearch $viewModel */
 $viewModel = $block->getData('view_model');
-$config = $viewModel->getJsConfig((array)$block->getData('targets'));
+$config = $viewModel->getJsConfig((array)$block->getData('targets'), (bool)$block->getData('config_only'));
 
 if ($config === null) {
     return;

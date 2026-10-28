@@ -20,7 +20,9 @@ define([
     var adapters = {'dom-form': domForm, 'ui-form': uiForm},
         registrations = [],
         instances = new WeakMap(),
-        listening = false;
+        listening = false,
+        pendingTargets = [],
+        pageConfig = null;
 
     function logger(config) {
         return function (message) {
@@ -176,17 +178,12 @@ define([
         }
     }
 
-    /**
-     * @param {Object} config From ViewModel\AddressSearch::getJsConfig()
-     */
-    return function (config) {
-        (config.targets || []).forEach(function (target) {
-            registrations.push({
-                selector: target.selector,
-                adapter: adapters[target.adapter] ? target.adapter : 'dom-form',
-                form: target.form,
-                config: config
-            });
+    function register(target, config) {
+        registrations.push({
+            selector: target.selector,
+            adapter: adapters[target.adapter] ? target.adapter : 'dom-form',
+            form: target.form,
+            config: config
         });
 
         if (!listening) {
@@ -198,5 +195,41 @@ define([
         if (document.activeElement) {
             onFocusIn({target: document.activeElement});
         }
+    }
+
+    /**
+     * x-magento-init entry point.
+     *
+     * @param {Object} config From ViewModel\AddressSearch::getJsConfig()
+     */
+    function bootstrap(config) {
+        pageConfig = config;
+        (config.targets || []).forEach(function (target) {
+            register(target, config);
+        });
+        pendingTargets.splice(0).forEach(function (target) {
+            register(target, config);
+        });
+    }
+
+    /**
+     * Registers a field from JavaScript, using the configuration the page already received from the layout
+     * (any target block, or the config-only handle "vaimo_google_address_search_v2_config").
+     * Safe to call before that configuration has loaded: the target is queued until it arrives.
+     * The form code must be registered in di.xml and enabled in the admin, like layout targets.
+     *
+     * @param {{selector: string, form: string, adapter: (string|undefined)}} target
+     */
+    bootstrap.addTarget = function (target) {
+        if (!target || !target.selector) {
+            return;
+        }
+        if (pageConfig) {
+            register(target, pageConfig);
+        } else {
+            pendingTargets.push(target);
+        }
     };
+
+    return bootstrap;
 });

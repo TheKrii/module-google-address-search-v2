@@ -22,10 +22,11 @@
                 <min_interval_ms>0</min_interval_ms>
                 <max_suggestions>5</max_suggestions>
                 <primary_types>street_address,premise,subpremise,route</primary_types>
-                <country_mode>form</country_mode>
-                <countries/>
+                <!-- South Africa first. ISO code ZA (SA is Saudi Arabia). -->
+                <country_mode>fixed</country_mode>
+                <countries>ZA</countries>
                 <language/>
-                <region/>
+                <region>ZA</region>
                 <session_timeout_s>180</session_timeout_s>
                 <skip_dead_prefixes>1</skip_dead_prefixes>
                 <disable_browser_autofill>1</disable_browser_autofill>
@@ -34,7 +35,11 @@
                 <populate_fields>1</populate_fields>
                 <missing_component>clear</missing_component>
                 <on_clear>keep</on_clear>
-                <field_mapping>{"_street0":{"form":"","countries":"","field":"street.0","template":"{route} {street_number}"},"_street0nf":{"form":"","countries":"US,CA,GB,IE,AU,NZ,ZA,FR,IN,SG,MY,PH,IL,HK","field":"street.0","template":"{street_number} {route}"},"_street1":{"form":"","countries":"","field":"street.1","template":"{subpremise}"},"_city":{"form":"","countries":"","field":"city","template":"{locality|postal_town|sublocality_level_1|administrative_area_level_3|administrative_area_level_2}"},"_postcode":{"form":"","countries":"","field":"postcode","template":"{postal_code}"},"_country":{"form":"","countries":"","field":"country_id","template":"{country:short}"},"_region":{"form":"","countries":"","field":"region","template":"{administrative_area_level_1}"}}</field_mapping>
+                <!--
+                    South African address format by default: "4/10 Bree Street" (unit/number street) on line 1,
+                    suburb on line 2. Countries that write the number after the street get their own row.
+                -->
+                <field_mapping>{"_street0":{"form":"","countries":"","field":"street.0","template":"{subpremise}/{street_number} {route}"},"_street0rf":{"form":"","countries":"DE,NL,BE,AT,CH,DK,SE,NO,FI,PL,CZ,SK,LV,LT,EE,IT,ES,PT","field":"street.0","template":"{route} {street_number}"},"_street1":{"form":"","countries":"","field":"street.1","template":"{sublocality_level_1|sublocality_level_2|neighborhood}"},"_city":{"form":"","countries":"","field":"city","template":"{locality|postal_town|administrative_area_level_3|sublocality_level_1|administrative_area_level_2}"},"_postcode":{"form":"","countries":"","field":"postcode","template":"{postal_code}"},"_country":{"form":"","countries":"","field":"country_id","template":"{country:short}"},"_region":{"form":"","countries":"","field":"region","template":"{administrative_area_level_1}"}}</field_mapping>
             </fill>
         </vaimo_google_address_search_v2>
     </default>

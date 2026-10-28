@@ -104,12 +104,12 @@
                 <field id="language" translate="label comment" type="text" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Language</label>
                     <backend_model>Vaimo\GoogleAddressSearchV2\Model\Config\Backend\LanguageCode</backend_model>
-                    <comment>Language of suggestions and address components, e.g. "en", "lv" or "pt-BR". Empty uses the store view locale.</comment>
+                    <comment>Language of suggestions and address components, e.g. "en", "af" or "zu". Empty uses the store view locale.</comment>
                 </field>
                 <field id="region" translate="label comment" type="text" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Region Bias</label>
                     <backend_model>Vaimo\GoogleAddressSearchV2\Model\Config\Backend\RegionCode</backend_model>
-                    <comment>Two-letter region code used to format and rank results, e.g. "LV". Empty uses the store's default country.</comment>
+                    <comment>Two-letter ISO code used to format and rank results. Default: ZA (South Africa). Note: SA is Saudi Arabia, not South Africa.</comment>
                 </field>
                 <field id="session_timeout_s" translate="label comment" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Session Idle Timeout (seconds)</label>
@@ -159,7 +159,7 @@
                     <backend_model>Vaimo\GoogleAddressSearchV2\Model\Config\Backend\FieldMapping</backend_model>
                     <comment><![CDATA[<strong>Target</strong>: a Magento field code (<code>street.0</code>, <code>street.1</code>, <code>city</code>, <code>postcode</code>, <code>country_id</code>, <code>region</code>, <code>company</code>...) or a CSS selector scoped to the form (starting with <code>#</code>, <code>.</code> or <code>[</code>). <code>region</code> selects the State/Province option, or fills the text field for countries without a region list.<br/>
 <strong>Template</strong>: Google component types in braces, e.g. <code>{route} {street_number}</code>. Add <code>:short</code> for the short form (<code>{country:short}</code>) and use <code>|</code> for fallbacks (<code>{locality|postal_town}</code>). Missing parts and leftover separators are removed.<br/>
-<strong>Form</strong> / <strong>Countries</strong> narrow a row (comma-separated ISO codes). For each target the most specific matching row wins: form + country, then form, then country, then rows for all forms.]]></comment>
+<strong>Form</strong> / <strong>Countries</strong> narrow a row (comma-separated ISO codes; South Africa is <code>ZA</code>, <code>SA</code> is Saudi Arabia). For each target the most specific matching row wins: form + country, then form, then country, then rows for all forms.]]></comment>
                     <depends>
                         <field id="populate_fields">1</field>
                     </depends>
