@@ -18,6 +18,9 @@ function prediction(id, text) {
                 fetchFields: async (request) => {
                     place.requested = request.fields;
                     place.addressComponents = [{longText: 'Latvia', shortText: 'LV', types: ['country']}];
+                    if (request.fields.includes('location') && fake.locationFor) {
+                        place.location = fake.locationFor;
+                    }
                 },
                 token: this.token
             };
@@ -172,4 +175,24 @@ test('network errors are transient', async () => {
     fake.error = new TypeError('Failed to fetch');
     await assert.rejects(client().suggest('Brivibas', []), {kind: 'transient'});
     assert.equal(client().availability(), 'ok');
+});
+
+test('details add latitude/longitude components only when location is requested', async () => {
+    const withLocation = client({detailFields: ['addressComponents', 'location']});
+    const [first] = await withLocation.suggest('Bree', ['ZA']);
+
+    fake.locationFor = {lat: () => -33.921384, lng: () => 18.418125};
+    const components = await withLocation.details(first);
+
+    assert.deepEqual(fake.lastPlace.requested, ['addressComponents', 'location']);
+    assert.deepEqual(components.slice(-2), [
+        {long: '-33.9213840', short: '-33.9213840', types: ['latitude']},
+        {long: '18.4181250', short: '18.4181250', types: ['longitude']}
+    ]);
+
+    fake.locationFor = null;
+    const [second] = await client().suggest('Loop', ['ZA']);
+    const plain = await client().details(second);
+    assert.deepEqual(fake.lastPlace.requested, ['addressComponents']);
+    assert.equal(plain.some((c) => c.types.includes('latitude')), false);
 });

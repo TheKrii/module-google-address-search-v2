@@ -7,7 +7,8 @@
  * Cost controls:
  *  - one session token per search, reused for every autocomplete request and the final details call,
  *    so the autocomplete requests of a completed session are not billed separately;
- *  - details are requested for addressComponents only (Place Details Essentials);
+ *  - details are requested for addressComponents only, plus location when a mapping uses
+ *    {latitude}/{longitude} (both Place Details Essentials);
  *  - identical input within a session is answered from memory (never persisted);
  *  - input extending a query that had no results is not sent again in the same session;
  *  - auth/API errors disable the client for the page, quota errors back off exponentially.
@@ -143,6 +144,30 @@
         return shared.loaders[key];
     }
 
+    /**
+     * Exposes the place location as pseudo components so mappings can use {latitude} and {longitude}.
+     * Only present when "location" was requested (see detailFieldsFor in bootstrap.js).
+     */
+    function locationComponents(location) {
+        var lat,
+            lng;
+
+        if (!location) {
+            return [];
+        }
+        lat = typeof location.lat === 'function' ? location.lat() : location.lat;
+        lng = typeof location.lng === 'function' ? location.lng() : location.lng;
+
+        if (typeof lat !== 'number' || typeof lng !== 'number' || !isFinite(lat) || !isFinite(lng)) {
+            return [];
+        }
+
+        return [
+            {long: lat.toFixed(7), short: lat.toFixed(7), types: ['latitude']},
+            {long: lng.toFixed(7), short: lng.toFixed(7), types: ['longitude']}
+        ];
+    }
+
     function normalizeInput(input) {
         return String(input).trim().replace(/\s+/g, ' ').toLowerCase();
     }
@@ -173,6 +198,7 @@
      * @param {number} [options.maxSuggestions]
      * @param {number} [options.sessionTimeoutMs]
      * @param {boolean} [options.skipDeadPrefixes]
+     * @param {string[]} [options.detailFields] Place Details fields, default ['addressComponents']
      * @param {Function} [options.log]
      * @param {Function} [options.loader] Test seam, defaults to loading the Maps JS API
      */
@@ -354,17 +380,19 @@
             self.stats.details++;
             self.log('place details request');
 
-            return place.fetchFields({fields: ['addressComponents']});
+            return place.fetchFields({fields: self.options.detailFields || ['addressComponents']});
         }).then(function () {
-            self.endSession();
-
-            return (place.addressComponents || []).map(function (component) {
+            var components = (place.addressComponents || []).map(function (component) {
                 return {
                     long: component.longText || '',
                     short: component.shortText || '',
                     types: component.types || []
                 };
             });
+
+            self.endSession();
+
+            return components.concat(locationComponents(place.location));
         }, function (error) {
             throw classify(error);
         });

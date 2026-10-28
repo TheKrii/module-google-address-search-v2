@@ -7,13 +7,14 @@
  * each input element gets at most one instance, a re-rendered input gets a fresh one.
  */
 define([
+    'Vaimo_GoogleAddressSearchV2/js/core/address-mapper',
     'Vaimo_GoogleAddressSearchV2/js/core/places-client',
     'Vaimo_GoogleAddressSearchV2/js/core/suggestion-list',
     'Vaimo_GoogleAddressSearchV2/js/core/search-controller',
     'Vaimo_GoogleAddressSearchV2/js/core/form-filler',
     'Vaimo_GoogleAddressSearchV2/js/adapter/dom-form',
     'Vaimo_GoogleAddressSearchV2/js/adapter/ui-form'
-], function (PlacesClient, SuggestionList, SearchController, formFiller, domForm, uiForm) {
+], function (addressMapper, PlacesClient, SuggestionList, SearchController, formFiller, domForm, uiForm) {
     'use strict';
 
     var adapters = {'dom-form': domForm, 'ui-form': uiForm},
@@ -74,6 +75,7 @@ define([
             maxSuggestions: config.search.maxSuggestions,
             sessionTimeoutMs: config.search.sessionTimeoutMs,
             skipDeadPrefixes: config.search.skipDeadPrefixes,
+            detailFields: addressMapper.detailFields(config.fill.mappings),
             log: log
         });
 

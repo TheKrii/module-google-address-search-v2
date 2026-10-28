@@ -104,3 +104,20 @@ test('matchOption matches by value, then label, ignoring case and diacritics', (
     assert.equal(mapper.matchOption(options, 'Texas', 'TX'), null);
     assert.equal(mapper.matchOption(options, '', ''), null);
 });
+
+test('coordinates: location is only requested when a mapping uses it, negative values survive', () => {
+    const rows = [{form: '', countries: [], field: 'latitude', template: '{latitude}'}];
+
+    assert.deepEqual(mapper.detailFields(DEFAULT_ROWS), ['addressComponents']);
+    assert.deepEqual(mapper.detailFields(rows), ['addressComponents', 'location']);
+    assert.deepEqual(mapper.detailFields([{template: '{locality|longitude}'}]), ['addressComponents', 'location']);
+
+    const index = mapper.indexComponents([
+        {long: '-33.9213840', short: '-33.9213840', types: ['latitude']},
+        {long: '18.4181250', short: '18.4181250', types: ['longitude']}
+    ]);
+
+    assert.equal(mapper.render('{latitude}', index), '-33.9213840');
+    assert.equal(mapper.render('{latitude}, {longitude}', index), '-33.9213840, 18.4181250');
+    assert.equal(mapper.render('- {route}', index), '');
+});

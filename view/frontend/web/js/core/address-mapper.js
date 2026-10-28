@@ -66,7 +66,8 @@
             .replace(/\s+/g, ' ')
             .replace(/\s+([,;])/g, '$1')
             .replace(/([,;\/-])(\s*[,;\/-])+/g, '$1')
-            .replace(/^[\s,;\/-]+|[\s,;\/-]+$/g, '');
+            // Leading "-" is kept when it is a minus sign (negative coordinates)
+            .replace(/^(?:[\s,;\/]|-(?!\d))+|[\s,;\/-]+$/g, '');
     }
 
     function specificity(row, form, country) {
@@ -122,6 +123,21 @@
         };
     }
 
+    /**
+     * Place Details fields needed by the mapping rows: always addressComponents, location only when a
+     * template uses {latitude} or {longitude}. Requesting fewer fields keeps the details call in the
+     * cheapest tier and the response small.
+     *
+     * @return {string[]}
+     */
+    function detailFields(rows) {
+        var needsLocation = (rows || []).some(function (row) {
+            return /\{[^{}]*\b(latitude|longitude)\b[^{}]*\}/.test(row.template || '');
+        });
+
+        return needsLocation ? ['addressComponents', 'location'] : ['addressComponents'];
+    }
+
     function normalize(text) {
         var value = String(text === null || text === undefined ? '' : text).toLowerCase().trim();
 
@@ -163,6 +179,7 @@
         indexComponents: indexComponents,
         render: render,
         map: map,
+        detailFields: detailFields,
         matchOption: matchOption,
         normalize: normalize
     };

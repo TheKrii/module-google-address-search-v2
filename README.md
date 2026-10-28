@@ -98,6 +98,10 @@ wins (form + country > form > country > all).
 | Target Field | `street.0`, `city`, `region`, `#my-field` | Field code, or CSS selector scoped to the form |
 | Template | `{street_number} {route}` | `{type}`, `{type:short}`, `{a\|b}` fallbacks |
 
+Besides Google's address component types, templates can use `{latitude}` and `{longitude}` (7 decimals)
+to fill coordinate fields, e.g. custom address attributes. The details request then also asks for
+`location` (same Essentials tier); without such a mapping it is not requested.
+
 `region` selects the State/Province option (matched by label, then short code) or fills the text field for
 countries without a region list. `country_id` is always applied first so region lists are up to date.
 Missing components either clear the field or keep it (setting); the search field itself is never left
